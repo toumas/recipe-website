@@ -11,8 +11,22 @@ async function getRecipes() {
     const filePath = path.join(recipesDirectory, filename);
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const matterResult = matter(fileContents);
+    let title = matterResult.data.title;
+
+    if (!title) {
+      const content = matterResult.content;
+      const h1Match = content.match(/^#\s+(.*)/);
+      if (h1Match && h1Match[1] && h1Match[1].trim()) {
+        title = h1Match[1].trim();
+      }
+    }
+
+    if (!title) {
+      title = filename.replace(/\.md$/, '');
+    }
+
     return {
-      title: matterResult.data.title || filename.replace(/\.md$/, ''),
+      title,
       slug: filename.replace(/\.md$/, ''),
     };
   });
