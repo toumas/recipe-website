@@ -1,22 +1,11 @@
 import Image from "next/image";
-import fs from 'fs';
-import matter from 'gray-matter';
-import path from 'path';
+// fs, matter, and path are now used by the imported getRecipes
+// import fs from 'fs';
+// import matter from 'gray-matter';
+// import path from 'path';
+import { getRecipes } from './lib/recipes'; // Import the refactored function
 
-async function getRecipes() {
-  const recipesDirectory = path.join(process.cwd(), 'recipes');
-  const filenames = fs.readdirSync(recipesDirectory);
-
-  return filenames.map(filename => {
-    const filePath = path.join(recipesDirectory, filename);
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const matterResult = matter(fileContents);
-    return {
-      title: matterResult.data.title || filename.replace(/\.md$/, ''),
-      slug: filename.replace(/\.md$/, ''),
-    };
-  });
-}
+// The getRecipes function definition has been moved to lib/recipes.ts
 
 export default async function Home() {
   const recipes = await getRecipes();
